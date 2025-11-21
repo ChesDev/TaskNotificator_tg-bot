@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static pro.sky.telegrambot.configuration.Constants.NOTIFICATION;
+
 @Service
 public class NotificationScheduler {
 
@@ -47,9 +49,9 @@ public class NotificationScheduler {
         }
     }
 
-    void sendNotification(NotificationTask task) {
+    private void sendNotification(NotificationTask task) {
         logger.info("Was invoked method sendNotification");
-        String notificationText = "🔔 **Напоминание!** 🔔\n\n" + task.getMessageText();
+        String notificationText = NOTIFICATION + task.getMessageText();
 
         SendMessage message = new SendMessage(task.getChatId(), notificationText);
         message.parseMode(ParseMode.valueOf("HTML"));
