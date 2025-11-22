@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class TelegramBotConfiguration {
@@ -27,6 +28,7 @@ public class TelegramBotConfiguration {
         bot.execute(new DeleteMyCommands());
         logger.info("Telegram bot initialized successfully");
         return bot;
+
     }
 
 }

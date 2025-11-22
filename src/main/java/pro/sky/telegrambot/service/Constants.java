@@ -1,4 +1,4 @@
-package pro.sky.telegrambot.configuration;
+package pro.sky.telegrambot.service;
 
 public class Constants {
     public static final String NOTIFICATION = "🔔 <b>Напоминание!</b> 🔔\n\n";
