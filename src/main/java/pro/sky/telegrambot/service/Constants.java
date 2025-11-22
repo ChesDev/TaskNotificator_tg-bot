@@ -10,7 +10,7 @@ public class Constants {
     public static final String CANCEL_ERROR_NOT_FOUND = "❌ Напоминание с ID: %s не найдено или вам не принадлежит.";
     public static final String NO_ACTIVE_NOTIFICATIONS = "📭 У вас нет активных напоминаний.";
     public static final String ACTIVE_NOTIFICATIONS_HEADER = "📋 <b>Ваши активные напоминания:</b>\n\n";
-    public static final String ACTIVE_NOTIFICATIONS_TASKS = "<blockquote>⏳ <b>ID</b>: %s <b>|</b> %s\n📝 <i>%s</i></blockquote>";
+    public static final String ACTIVE_NOTIFICATIONS_TASKS = "<blockquote>⏳ <b>ID</b>: %s <b>|</b> %s\n📝 <i>%s</i></blockquote>\n";
     public static final String ACTIVE_NOTIFICATIONS_FOOTER = "💡 Для отмены используйте: <i>/delete ID</i>";
     public static final String NOTIFICATION_CREATE_SUCCESS = """
             ✅ <b>Напоминание создано!</b>
