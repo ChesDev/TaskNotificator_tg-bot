@@ -1,0 +1,16 @@
+version: null
+meta:
+  environment: jvm
+  toolchain:
+    name: maven
+    version: "17"
+build:
+  image: null
+  args: spring
+  artifacts:
+    target/*.jar: /
+run:
+  image: null
+  jarName: telegram-bot 0.0.1-SNAPSHOT.jar
+  persistenceMount: /data
+  containerPort: 80
