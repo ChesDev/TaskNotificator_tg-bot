@@ -13,6 +13,8 @@ import pro.sky.telegrambot.entity.TaskStatus;
 import pro.sky.telegrambot.repository.NotificationTaskRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -33,7 +35,8 @@ public class NotificationScheduler {
 
     @Scheduled(cron = "0 * * * * *") // Каждую минуту в 00 секунд
     public void checkNotifications() {
-        LocalDateTime currentDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime currentDateTime = localDateTime.atZone(ZoneId.of("Asia/Yekaterinburg")).truncatedTo(ChronoUnit.MINUTES);
 
         // Ищем только PENDING напоминания
         List<NotificationTask> tasks = notificationTaskRepository.findPendingByNotificationDateTime(currentDateTime);
