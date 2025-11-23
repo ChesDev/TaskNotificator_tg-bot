@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import pro.sky.telegrambot.entity.NotificationTask;
 import pro.sky.telegrambot.entity.TaskStatus;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;

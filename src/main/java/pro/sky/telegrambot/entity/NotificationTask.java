@@ -2,6 +2,7 @@ package pro.sky.telegrambot.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +20,7 @@ public class NotificationTask {
     private String messageText;
 
     @Column(name = "notification_date_time", nullable = false)
-    private LocalDateTime notificationDateTime;
+    private ZonedDateTime notificationDateTime;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -31,7 +32,7 @@ public class NotificationTask {
     public NotificationTask() {
     }
 
-    public NotificationTask(Long chatId, String messageText, LocalDateTime notificationDateTime) {
+    public NotificationTask(Long chatId, String messageText, ZonedDateTime notificationDateTime) {
         this.chatId = chatId;
         this.messageText = messageText;
         this.notificationDateTime = notificationDateTime;
@@ -66,11 +67,11 @@ public class NotificationTask {
         this.messageText = messageText;
     }
 
-    public LocalDateTime getNotificationDateTime() {
+    public ZonedDateTime getNotificationDateTime() {
         return notificationDateTime;
     }
 
-    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
+    public void setNotificationDateTime(ZonedDateTime notificationDateTime) {
         this.notificationDateTime = notificationDateTime;
     }
 

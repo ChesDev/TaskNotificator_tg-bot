@@ -14,8 +14,12 @@ import pro.sky.telegrambot.repository.NotificationTaskRepository;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -87,10 +91,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
         String dateTimeString = matcher.group(1);
         String reminderText = matcher.group(2);
-        LocalDateTime notificationDateTime;
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime notificationDateTime;
 
         try {
-            notificationDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
+            notificationDateTime = localDateTime.atZone(ZoneId.of("Asia/Yekaterinburg")).parse(dateTimeString, DATE_TIME_FORMATTER);
 
         } catch (DateTimeParseException e) {
             sendMessage(chatId, CREATE_ERROR_INVALID_DATE_FORMAT);
@@ -99,7 +104,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
 
         // Проверяем, что дата не в прошлом
-        if (notificationDateTime.isBefore(LocalDateTime.now())) {
+        if (notificationDateTime.isBefore(ChronoZonedDateTime.from(LocalDateTime.now()))) {
             sendMessage(chatId, CREATE_ERROR_PAST_TIME);
             logger.info("Sent pastTimeError message to user {} in chat: {}", userName, chatId);
             return;
