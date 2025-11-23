@@ -15,7 +15,6 @@ import pro.sky.telegrambot.repository.NotificationTaskRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static pro.sky.telegrambot.service.Constants.NOTIFICATION;
@@ -27,6 +26,7 @@ public class NotificationScheduler {
 
     private final NotificationTaskRepository notificationTaskRepository;
     private final TelegramBot telegramBot;
+    private static final ZoneId TIME_ZONE = ZoneId.of("Asia/Yekaterinburg");
 
     public NotificationScheduler(NotificationTaskRepository notificationTaskRepository, TelegramBot telegramBot) {
         this.notificationTaskRepository = notificationTaskRepository;
@@ -35,11 +35,12 @@ public class NotificationScheduler {
 
     @Scheduled(cron = "0 * * * * *") // Каждую минуту в 00 секунд
     public void checkNotifications() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        ZonedDateTime currentDateTime = localDateTime.atZone(ZoneId.of("Asia/Yekaterinburg")).truncatedTo(ChronoUnit.MINUTES);
+        // Получаем текущее время в нужном часовом поясе
+        LocalDateTime currentDateTime = ZonedDateTime.now(TIME_ZONE)
+                .toLocalDateTime();
 
-        // Ищем только PENDING напоминания
-        List<NotificationTask> tasks = notificationTaskRepository.findPendingByNotificationDateTime(currentDateTime);
+        // Ищем PENDING напоминания, время которых наступило
+        List<NotificationTask> tasks = notificationTaskRepository.findPendingByNotificationDateTimeBefore(currentDateTime);
 
         if (!tasks.isEmpty()) {
             tasks.forEach(task -> {

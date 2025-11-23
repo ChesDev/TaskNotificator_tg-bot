@@ -16,10 +16,8 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -37,6 +35,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final TelegramBot telegramBot;
     private final NotificationTaskRepository notificationTaskRepository;
+    private static final ZoneId TIME_ZONE = ZoneId.of("Asia/Yekaterinburg");
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, NotificationTaskRepository notificationTaskRepository) {
         this.notificationTaskRepository = notificationTaskRepository;
@@ -91,11 +90,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
         String dateTimeString = matcher.group(1);
         String reminderText = matcher.group(2);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        ZonedDateTime notificationDateTime;
+        LocalDateTime notificationDateTime;
 
         try {
-            notificationDateTime = localDateTime.atZone(ZoneId.of("Asia/Yekaterinburg")).parse(dateTimeString, DATE_TIME_FORMATTER);
+            // Парсим время и устанавливаем часовой пояс
+            LocalDateTime parsedDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
+            // Преобразуем в ZonedDateTime с указанием часового пояса
+            ZonedDateTime zonedDateTime = parsedDateTime.atZone(TIME_ZONE);
+            notificationDateTime = zonedDateTime.toLocalDateTime();
 
         } catch (DateTimeParseException e) {
             sendMessage(chatId, CREATE_ERROR_INVALID_DATE_FORMAT);
@@ -103,8 +105,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             return;
         }
 
+        // Получаем текущее время в том же часовом поясе для сравнения
+        LocalDateTime currentDateTime = ZonedDateTime.now(TIME_ZONE).toLocalDateTime();
+
         // Проверяем, что дата не в прошлом
-        if (notificationDateTime.isBefore(ChronoZonedDateTime.from(LocalDateTime.now()))) {
+        if (notificationDateTime.isBefore(currentDateTime)) {
             sendMessage(chatId, CREATE_ERROR_PAST_TIME);
             logger.info("Sent pastTimeError message to user {} in chat: {}", userName, chatId);
             return;
@@ -120,6 +125,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         logger.info("Sent message about adding a reminder to user {} in chat: {}", userName, chatId);
     }
 
+    // Остальные методы остаются без изменений...
     private void sendWelcomeMessage(Long chatId, String firstName, String userName) {
         logger.info("Was invoked method sendWelcomeMessage");
         String welcomeText = WELCOME_MESSAGE.formatted(firstName);

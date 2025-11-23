@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import pro.sky.telegrambot.entity.NotificationTask;
 import pro.sky.telegrambot.entity.TaskStatus;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +15,8 @@ import java.util.Optional;
 public interface NotificationTaskRepository extends JpaRepository<NotificationTask, Long> {
 
     // Находим напоминания для отправки (только PENDING)
-    @Query("SELECT nt FROM NotificationTask nt WHERE nt.notificationDateTime = :dateTime AND nt.status = 'PENDING'")
-    List<NotificationTask> findPendingByNotificationDateTime(@Param("dateTime") ZonedDateTime dateTime);
+    @Query("SELECT nt FROM NotificationTask nt WHERE nt.notificationDateTime <= :dateTime AND nt.status = 'PENDING'")
+    List<NotificationTask> findPendingByNotificationDateTimeBefore(@Param("dateTime") LocalDateTime dateTime);
 
     List<NotificationTask> findByChatIdOrderByNotificationDateTime(Long chatId);
 
